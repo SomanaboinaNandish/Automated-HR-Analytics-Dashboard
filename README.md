@@ -96,3 +96,29 @@ HR-Automation-Dashboard/
 ├── HR_Automation_Dashboard.xlsx
 ├── requirements.txt
 └── README.md
+
+# How to Run the Project
+
+## Step 1 — Clone the Repository
+
+```bash
+git clone https://github.com/SomanaboinaNandish/Automated-HR-Analytics-Dashboard.git
+cd Automated-HR-Analytics-Dashboard
+Step 2 — Install Required Libraries
+py -m pip install pandas openpyxl xlsxwriter
+Step 3 — Place Source Excel File
+Make sure:
+
+HR_Dashboard_Data.xlsx
+
+is present in the project folder.
+
+Step 4 — Run the Dashboard Generator
+py generate_dashboard.py
+Step 5 — Open Generated Dashboard
+
+After execution, the dashboard file will be created automatically:
+
+HR_Automation_Dashboard.xlsx
+
+Open it using Microsoft Excel.
