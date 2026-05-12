@@ -1,9 +1,3 @@
-"""
-HR Automation Dashboard Builder
-Senior Business Analyst + Excel Automation Expert Solution
-Generates a production-ready HR Dashboard with KPIs, alerts, charts, and analytics
-"""
-
 import pandas as pd
 from datetime import datetime
 import openpyxl
@@ -23,9 +17,6 @@ from openpyxl.chart.label import DataLabelList
 import shutil
 import os
 
-# ─────────────────────────────────────────────────────────
-#  COLOUR PALETTE  (Dark Corporate Theme)
-# ─────────────────────────────────────────────────────────
 C = {
     "navy":       "0D1B2A",   # Primary dark background
     "dark_blue":  "1B3A5C",   # Secondary dark
@@ -102,9 +93,7 @@ def freeze_and_filter(ws, freeze_ref, filter_range=None):
 def set_tab_color(ws, hex_color):
     ws.sheet_properties.tabColor = hex_color
 
-# ─────────────────────────────────────────────────────────
 #  LOAD SOURCE DATA
-# ─────────────────────────────────────────────────────────
 SRC = r"C:\Users\nandi\Desktop\HR\HR_Dashboard_Data.xlsx"
 
 def load_all_sheets():
@@ -170,9 +159,8 @@ def load_rm():
     df = pd.read_excel(SRC, sheet_name="RM Data", header=1)
     return df
 
-# ─────────────────────────────────────────────────────────
 #  KPI CALCULATIONS
-# ─────────────────────────────────────────────────────────
+
 def compute_kpis(india, us, offboarded, risk, productivity):
     today = pd.Timestamp.today()
     combined = pd.concat([
@@ -246,9 +234,9 @@ def compute_kpis(india, us, offboarded, risk, productivity):
         "combined": combined,
     }
 
-# ─────────────────────────────────────────────────────────
+
 #  SHEET BUILDERS
-# ─────────────────────────────────────────────────────────
+
 
 def build_india_sheet(wb, india_df):
     if "India Employee Database" in wb.sheetnames:
@@ -383,7 +371,7 @@ def build_rm_sheet(wb):
 
     ws.merge_cells("A1:Z1")
     tc = ws["A1"]
-    tc.value = "📊  RESOURCE MANAGEMENT — MONTHLY ALLOCATION DATA"
+    tc.value = " RESOURCE MANAGEMENT — MONTHLY ALLOCATION DATA"
     tc.font = make_font(size=14, bold=True, color=C["white"])
     tc.fill = make_fill(C["navy"])
     tc.alignment = center()
@@ -436,7 +424,7 @@ def build_finance_sheet(wb, finance_df):
 
     ws.merge_cells("A1:H1")
     tc = ws["A1"]
-    tc.value = "💰  FINANCE — CTC DATA (INDIA & US)"
+    tc.value = " FINANCE — CTC DATA (INDIA & US)"
     tc.font = make_font(size=14, bold=True, color=C["white"])
     tc.fill = make_fill(C["navy"])
     tc.alignment = center()
@@ -491,7 +479,7 @@ def build_productivity_sheet(wb, prod_df):
 
     ws.merge_cells("A1:P1")
     tc = ws["A1"]
-    tc.value = "⚡  PRODUCTIVITY — AVERAGE HOURS/DAY PER RESOURCE"
+    tc.value = " PRODUCTIVITY — AVERAGE HOURS/DAY PER RESOURCE"
     tc.font = make_font(size=14, bold=True, color=C["white"])
     tc.fill = make_fill(C["navy"])
     tc.alignment = center()
@@ -636,11 +624,7 @@ def build_offboarded_sheet(wb, off_df):
     last_row = 2 + len(off_df)
     freeze_and_filter(ws, "A3", f"A2:K{last_row}")
     return ws
-
-
-# ─────────────────────────────────────────────────────────
 #  DASHBOARD SHEET (Main)
-# ─────────────────────────────────────────────────────────
 
 def write_kpi_card(ws, start_row, start_col, title, value, subtitle, bg_color, icon=""):
     # Merge 3 cols x 5 rows per card
@@ -691,7 +675,7 @@ def build_dashboard_sheet(wb, kpis):
     for ci in range(1, 25):
         ws.column_dimensions[get_column_letter(ci)].width = 9
 
-    # ── HEADER BANNER ────────────────────────────────────
+    # HEADER BANNER
     ws.merge_cells("A1:X2")
     banner = ws["A1"]
     banner.value = "🏢  HR AUTOMATION DASHBOARD  |  INDIA & US GEOGRAPHIES  |  REAL-TIME ANALYTICS"
@@ -710,10 +694,10 @@ def build_dashboard_sheet(wb, kpis):
     sub.alignment = center()
     ws.row_dimensions[3].height = 16
 
-    # ── SECTION: KPI CARDS (row 5–9) ────────────────────
+    #SECTION: KPI CARDS (row 5–9)
     ws.merge_cells("A4:X4")
     sec = ws["A4"]
-    sec.value = "📊  KEY METRICS AT A GLANCE"
+    sec.value = "  KEY METRICS AT A GLANCE"
     sec.font = make_font(size=10, bold=True, color=C["white"])
     sec.fill = make_fill(C["mid_blue"])
     sec.alignment = left_align()
@@ -735,8 +719,8 @@ def build_dashboard_sheet(wb, kpis):
     # ── SECTION LABELS ───────────────────────────────────
     row_sep = 11
     for section, cols, bg in [
-        ("🔔  ACTIVE ALERTS", "A11:L11", C["kpi_bg4"]),
-        ("📈  DEPARTMENT ANALYTICS", "M11:X11", C["kpi_bg1"]),
+        ("  ACTIVE ALERTS", "A11:L11", C["kpi_bg4"]),
+        ("  DEPARTMENT ANALYTICS", "M11:X11", C["kpi_bg1"]),
     ]:
         ws.merge_cells(cols)
         c = ws[cols.split(":")[0]]
@@ -746,10 +730,10 @@ def build_dashboard_sheet(wb, kpis):
         c.alignment = left_align()
         ws.row_dimensions[row_sep].height = 20
 
-    # ── INTERN LWD ALERT TABLE (rows 12–28) ──────────────
+    #INTERN LWD ALERT TABLE (rows 12–28)
     ws.merge_cells("A12:L12")
     intern_title = ws["A12"]
-    intern_title.value = "🚨  INTERN LWD ALERTS — LAST WORKING DAY WITHIN 45 DAYS"
+    intern_title.value = " INTERN LWD ALERTS — LAST WORKING DAY WITHIN 45 DAYS"
     intern_title.font = make_font(size=9, bold=True, color=C["white"])
     intern_title.fill = make_fill(C["kpi_bg4"])
     intern_title.alignment = center()
@@ -797,16 +781,16 @@ def build_dashboard_sheet(wb, kpis):
     if ia_df.empty:
         ws.merge_cells("A14:L14")
         nc = ws["A14"]
-        nc.value = "✅  No intern LWD alerts at this time"
+        nc.value = "  No intern LWD alerts at this time"
         nc.font = make_font(size=9, color="2E7D32")
         nc.fill = make_fill("E8F5E9")
         nc.alignment = center()
         ws.row_dimensions[14].height = 18
 
-    # ── PROBATION ALERT TABLE (rows 28–40) ───────────────
+    # PROBATION ALERT TABLE (rows 28–40)
     ws.merge_cells("A28:L28")
     prob_title = ws["A28"]
-    prob_title.value = "⏳  PROBATION CONFIRMATION ALERTS — DUE WITHIN 30 DAYS"
+    prob_title.value = "  PROBATION CONFIRMATION ALERTS — DUE WITHIN 30 DAYS"
     prob_title.font = make_font(size=9, bold=True, color=C["white"])
     prob_title.fill = make_fill(C["kpi_bg1"])
     prob_title.alignment = center()
@@ -851,13 +835,13 @@ def build_dashboard_sheet(wb, kpis):
     if pa_df.empty:
         ws.merge_cells("A30:L30")
         nc = ws["A30"]
-        nc.value = "✅  No probation confirmation alerts at this time"
+        nc.value = " No probation confirmation alerts at this time"
         nc.font = make_font(size=9, color="2E7D32")
         nc.fill = make_fill("E8F5E9")
         nc.alignment = center()
         ws.row_dimensions[30].height = 18
 
-    # ── DEPT HEADCOUNT TABLE (M12:X28) ───────────────────
+    # DEPT HEADCOUNT TABLE (M12:X28) 
     ws.merge_cells("M12:X12")
     dept_title = ws["M12"]
     dept_title.value = "🏬  HEADCOUNT BY DEPARTMENT"
@@ -901,7 +885,7 @@ def build_dashboard_sheet(wb, kpis):
         if ri > 26:
             break
 
-    # ── ATTRITION SECTION (row 41–55) ────────────────────
+    #ATTRITION SECTION (row 41–55)
     ws.merge_cells("A41:L41")
     att_title = ws["A41"]
     att_title.value = "📉  QUARTERLY ATTRITION RATE  (Auto-Calculated from Offboarded Resources)"
@@ -941,7 +925,7 @@ def build_dashboard_sheet(wb, kpis):
             c.border = make_border()
         ws.row_dimensions[ri].height = 16
 
-    # ── RISK DISTRIBUTION (M41:X55) ──────────────────────
+    # RISK DISTRIBUTION (M41:X55)
     ws.merge_cells("M41:X41")
     risk_title = ws["M41"]
     risk_title.value = "🚨  RISK DISTRIBUTION (Live from Risk Report Tab)"
@@ -979,10 +963,10 @@ def build_dashboard_sheet(wb, kpis):
             c.border = make_border()
         ws.row_dimensions[ri].height = 18
 
-    # ── FINANCE SUMMARY (row 57–65) ───────────────────────
+    #FINANCE SUMMARY (row 57–65)
     ws.merge_cells("A57:X57")
     fin_title = ws["A57"]
-    fin_title.value = "💰  FINANCE SUMMARY  |  Total CTC Budget"
+    fin_title.value = "  FINANCE SUMMARY  |  Total CTC Budget"
     fin_title.font = make_font(size=9, bold=True, color=C["white"])
     fin_title.fill = make_fill(C["kpi_bg2"])
     fin_title.alignment = center()
@@ -1005,12 +989,12 @@ def build_dashboard_sheet(wb, kpis):
         for r in range(58, 63):
             ws.row_dimensions[r].height = 16
 
-    # ── FOOTER ───────────────────────────────────────────
+    #FOOTER
     ws.merge_cells("A64:X64")
     footer = ws["A64"]
     footer.value = ("HR AUTOMATION DASHBOARD  |  Built with Python + openpyxl  "
                     "|  Data Sources: India DB, US DB, RM Data, Finance, Productivity, Risk, Offboarded  "
-                    "|  🔴 Red = Urgent  🟡 Amber = Warning  🟢 Green = OK")
+                    "|   Red = Urgent   Amber = Warning   Green = OK")
     footer.font = make_font(size=7, italic=True, color="78909C")
     footer.fill = make_fill(C["navy"])
     footer.alignment = center()
@@ -1022,11 +1006,7 @@ def build_dashboard_sheet(wb, kpis):
 
     return ws
 
-
-# ─────────────────────────────────────────────────────────
 #  CHART SHEET
-# ─────────────────────────────────────────────────────────
-
 def build_charts_sheet(wb, kpis):
     if "Charts & Analytics" in wb.sheetnames:
         del wb["Charts & Analytics"]
@@ -1042,7 +1022,7 @@ def build_charts_sheet(wb, kpis):
     ws.row_dimensions[1].height = 24
     ws.sheet_view.showGridLines = False
 
-    # ── DATA TABLE: Department Headcount ─────────────────
+    # DATA TABLE: Department Headcount
     ws["A3"] = "Department"
     ws["B3"] = "Headcount"
     ws["A3"].font = make_font(bold=True, color=C["white"])
@@ -1074,7 +1054,7 @@ def build_charts_sheet(wb, kpis):
     bar.shape = 4
     ws.add_chart(bar, "D3")
 
-    # ── DATA TABLE: Attrition ─────────────────────────────
+    # DATA TABLE: Attrition
     att_row_start = last_dept_row + 3
     ws.cell(row=att_row_start, column=1).value = "Quarter"
     ws.cell(row=att_row_start, column=2).value = "Exits"
@@ -1107,7 +1087,7 @@ def build_charts_sheet(wb, kpis):
     line.set_categories(l_cats)
     ws.add_chart(line, "D22")
 
-    # ── DATA TABLE: Risk Distribution ────────────────────
+    # DATA TABLE: Risk Distribution
     risk_row_start = last_att_row + 3
     ws.cell(row=risk_row_start, column=1).value = "Risk Level"
     ws.cell(row=risk_row_start, column=2).value = "Count"
@@ -1142,11 +1122,7 @@ def build_charts_sheet(wb, kpis):
 
     return ws
 
-
-# ─────────────────────────────────────────────────────────
 #  VBA MODULE SHEET (Instructions + VBA Code)
-# ─────────────────────────────────────────────────────────
-
 def build_vba_instructions_sheet(wb):
     if "VBA & Setup Guide" in wb.sheetnames:
         del wb["VBA & Setup Guide"]
@@ -1159,20 +1135,20 @@ def build_vba_instructions_sheet(wb):
 
     ws.merge_cells("A1:B1")
     banner = ws["A1"]
-    banner.value = "⚙️  VBA MACRO CODE & SETUP GUIDE FOR HR DASHBOARD"
+    banner.value = "  VBA MACRO CODE & SETUP GUIDE FOR HR DASHBOARD"
     banner.font = make_font(size=14, bold=True, color=C["white"])
     banner.fill = make_fill("4A148C")
     banner.alignment = center()
     ws.row_dimensions[1].height = 28
 
     content = [
-        ("HEADING", "📌 HOW TO ADD VBA MACROS IN EXCEL"),
+        ("HEADING", " HOW TO ADD VBA MACROS IN EXCEL"),
         ("TEXT", "1. Press ALT + F11 to open the Visual Basic Editor (VBE)"),
         ("TEXT", "2. Click Insert → Module to create a new module"),
         ("TEXT", "3. Paste the VBA code below into the module"),
         ("TEXT", "4. Press F5 or click Run to execute | Save file as .xlsm (Macro-Enabled Workbook)"),
         ("BLANK", ""),
-        ("HEADING", "🔄 VBA: AUTO-REFRESH DASHBOARD BUTTON"),
+        ("HEADING", " VBA: AUTO-REFRESH DASHBOARD BUTTON"),
         ("CODE", """Sub RefreshDashboard()
     Application.ScreenUpdating = False
     Application.Calculation = xlCalculationAutomatic
@@ -1192,7 +1168,7 @@ def build_vba_instructions_sheet(wb):
     MsgBox "Dashboard refreshed successfully!", vbInformation, "HR Dashboard"
 End Sub"""),
         ("BLANK", ""),
-        ("HEADING", "🚨 VBA: HIGHLIGHT INTERN ALERTS"),
+        ("HEADING", " VBA: HIGHLIGHT INTERN ALERTS"),
         ("CODE", """Sub HighlightInternAlerts()
     Dim ws As Worksheet
     Dim lastRow As Long
@@ -1220,7 +1196,7 @@ End Sub"""),
     MsgBox "Intern LWD alerts highlighted!", vbInformation
 End Sub"""),
         ("BLANK", ""),
-        ("HEADING", "⏳ VBA: FLAG PROBATION EMPLOYEES"),
+        ("HEADING", " VBA: FLAG PROBATION EMPLOYEES"),
         ("CODE", """Sub FlagProbationAlerts()
     Dim ws As Worksheet
     Dim lastRow As Long
@@ -1250,7 +1226,7 @@ End Sub"""),
     MsgBox "Probation alerts flagged!", vbInformation
 End Sub"""),
         ("BLANK", ""),
-        ("HEADING", "📊 VBA: ADD NAVIGATION BUTTONS TO DASHBOARD"),
+        ("HEADING", " VBA: ADD NAVIGATION BUTTONS TO DASHBOARD"),
         ("CODE", """Sub AddNavigationButtons()
     Dim dash As Worksheet
     Set dash = ThisWorkbook.Sheets("Dashboard")
@@ -1274,7 +1250,7 @@ End Sub"""),
     Next i
 End Sub"""),
         ("BLANK", ""),
-        ("HEADING", "🔐 VBA: PROTECT FORMULA CELLS"),
+        ("HEADING", " VBA: PROTECT FORMULA CELLS"),
         ("CODE", """Sub ProtectFormulas()
     Dim ws As Worksheet
     For Each ws In ThisWorkbook.Worksheets
@@ -1323,9 +1299,9 @@ End Sub"""),
     return ws
 
 
-# ─────────────────────────────────────────────────────────
+
 #  MAIN BUILDER
-# ─────────────────────────────────────────────────────────
+
 
 def build_all():
     print("Loading source data...")
